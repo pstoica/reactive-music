@@ -1,4 +1,5 @@
 var midi = require('./midi');
+var scheduler = require('./scheduler');
 
 module.hot.accept();
 
@@ -10,12 +11,47 @@ navigator
       return output[1].name.startsWith('OP-1');
     })[0][1];
 
-    let now = window.performance.now();
+    return Promise.resolve(OP1);
+  })
+  .then(OP1 => {
+    scheduler.scheduleRelative(1000, function () {
+      OP1.send(midi.createNote({
+        on: true,
+        key: 60
+      }), scheduler.clock);
+      OP1.send(midi.createNote({
+        on: false,
+        key: 60
+      }), scheduler.clock + 500);
+    });
 
-    OP1.send(midi.createNote(true, 0, 60, 127), now);
-    OP1.send(midi.createNote(false, 0, 60, 127), now + 500);
+    scheduler.scheduleRelative(2000, function () {
+      OP1.send(midi.createNote({
+        on: true,
+        key: 62 + 12
+      }), scheduler.clock);
+      OP1.send(midi.createNote({
+        on: false,
+        key: 62 + 12
+      }), scheduler.clock + 500);
+    });
 
-    OP1.send(midi.createNote(true, 0, 62, 127), now + 1000);
-    OP1.send(midi.createNote(false, 0, 62, 127), now + 1500);
+    scheduler.scheduleRelative(3000, function () {
+      OP1.send(midi.createNote({
+        on: true,
+        key: 64 + 12
+      }), scheduler.clock);
+      OP1.send(midi.createNote({
+        on: false,
+        key: 64 + 12
+      }), scheduler.clock + 500);
+    });
   })
   .catch(::console.error);
+
+const disposable = Rx.Scheduler.default.schedulePeriodic(
+  300, /* .3 seconds */
+  () => {
+    scheduler.advanceBy(350);
+  }
+);
