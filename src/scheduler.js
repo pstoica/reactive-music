@@ -2,8 +2,6 @@
  * Copied from https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/schedulers/virtualtimescheduler.md#usage
  */
 
-const Rx = require('rx');
-
 function comparer (x, y) {
   if (x > y) { return 1; }
   if (x < y) { return -1; }
@@ -40,4 +38,4 @@ scheduler.toRelative = function (timeSpan) {
     return timeSpan;
 };
 
-module.exports = scheduler;
+export default scheduler;

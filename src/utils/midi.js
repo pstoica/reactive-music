@@ -1,4 +1,4 @@
-exports.createNote = function({
+export function createNote({
   on = true,
   channel = 0,
   key = 60,
@@ -10,3 +10,4 @@ exports.createNote = function({
     velocity & 0x7F
   ];
 };
+
