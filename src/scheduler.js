@@ -1,3 +1,7 @@
+/**
+ * Copied from https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/schedulers/virtualtimescheduler.md#usage
+ */
+
 const Rx = require('rx');
 
 function comparer (x, y) {
