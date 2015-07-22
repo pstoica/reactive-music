@@ -25,7 +25,7 @@ export default function requestChannel(deviceName = 'DEBUGGER') {
 
       subject.subscribe(({ note, time }) => device.send(
         µ.midi.createNote(note),
-        time
+        time * window.MS_PER_CYCLE
       ));
 
       return Promise.resolve(subject);

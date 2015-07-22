@@ -1,3 +1,7 @@
+window.CYCLES_PER_MINUTE = 120 / 4;
+window.MS_PER_CYCLE = 1000 * (60 / window.CYCLES_PER_MINUTE);
+window.LOOKAHEAD = 40;
+
 /* Comparer required for scheduling priority */
 function comparer (x, y) {
     if (x > y) { return 1; }
