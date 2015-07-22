@@ -1,16 +1,24 @@
-U.requestChannel('OP-1').subscribe(
-  (m) => {
-    Rx.Observable
-      .merge(
-        $a,
-        $b
-      )
-      .subscribe(
-        ({ time, ...note }) => {
-          //console.log(note, time);
-          m.send(U.midi.createNote(note), time);
-        }
-      );
-  },
-  (e) => ::console.error
-);
+import µ from 'utils';
+import a from 'streams/a';
+import b from 'streams/b';
+
+export default (scheduler) => {
+  const $ = µ.requestChannel('DEBUGGER').subscribe(
+    (m) => {
+    console.log(m);
+      Obs
+        .merge(
+          a(scheduler)
+        )
+        .subscribe(
+          ({ time, ...note }) => {
+            m.onNext({ note, time });
+          }
+        );
+    },
+    (e) => ::console.error
+  );
+
+  module.hot && module.hot.dispose(() => $.dispose());
+}
+

@@ -1,22 +1,36 @@
-scheduler.scheduleRelative(2000, function play() {
-  let notes = Rx.Observable.zip(
-    // alternate on/off
-    Rx.Observable.from([true, false]),
+export default (scheduler) => {
+  const $ = new Rx.Subject();
 
-    // note, paired for on/off
-    Rx.Observable
-      .fromArray([60 + 24])
-      .flatMap(x => Rx.Observable.repeat(x, 2)),
+  const $$ = scheduler.scheduleRecursiveWithRelative(
+    1,
+    (self) => {
+      let notes = Obs.zip(
+        // alternate on/off
+        Obs.from([true, false]),
 
-    // times, delayed by 0.5 seconds
-    Rx.Observable.from([0, 1]).map(x => scheduler.clock + x * 1500),
+        // note, paired for on/off
+        Obs
+          .fromArray([60 + 24])
+          .flatMap(x => Obs.repeat(x, 2)),
 
-    // convert to note-compatible object
-    (on, key, time) => ({ on, key, time })
+        // times, delayed by 0.5 seconds
+        Obs.from([0, 1]).map(x => scheduler.clock + x * 0.5),
+
+        // convert to note-compatible object
+        (on, key, time) => ({ on, key, time })
+      );
+
+      notes.subscribe(::$.onNext);
+
+      // virtual temporal recursion
+      self(1);
+    }
   );
 
-  notes.subscribe(::$.onNext);
+  module.hot && module.hot.dispose(() => {
+    $.dispose();
+    $$.dispose();
+  });
 
-  // virtual temporal recursion
-  scheduler.scheduleRelative(1000, play);
-});
+  return $;
+};

@@ -1,14 +1,11 @@
-/**
- * Copied from https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/schedulers/virtualtimescheduler.md#usage
- */
-
+/* Comparer required for scheduling priority */
 function comparer (x, y) {
-  if (x > y) { return 1; }
-  if (x < y) { return -1; }
-  return 0;
+    if (x > y) { return 1; }
+    if (x < y) { return -1; }
+    return 0;
 }
 
-var scheduler = new Rx.VirtualTimeScheduler(window.performance.now(), comparer);
+var scheduler = new Rx.VirtualTimeScheduler(0, comparer);
 
 /**
  * Adds a relative time value to an absolute time value.

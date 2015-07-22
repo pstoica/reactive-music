@@ -1,25 +1,39 @@
-scheduler.scheduleRelative(2000, function play() {
-  //console.log(scheduler.clock);
-  let notes = Rx.Observable.zip(
-    // alternate on/off
-    Rx.Observable.merge(
-      Rx.Observable.repeat(true, 3),
-      Rx.Observable.repeat(false, 3)
-    ),
+export default (scheduler) => {
+  const $ = new Rx.Subject();
 
-    // note, paired for on/off
-    Rx.Observable
-      .fromArray([60, 62 + 12, 64 + 12])
-      .flatMap(x => Rx.Observable.repeat(x, 2)),
+  const $$ = scheduler.schedulePeriodic(
+    1,
+    () => {
+      let notes = Obs.zip(
+        // alternate on/off
+        Obs
+          .fromArray([true, false])
+          .flatMap(x => Obs.repeat(x, 3)),
 
-    // times, delayed by 0.5 seconds
-    Rx.Observable.range(0, 6).map(x => scheduler.clock + x * 500),
+        // note, paired for on/off
+        Obs
+          .fromArray([60, 62, 64])
+          .flatMap(x => Obs.repeat(x, 2)),
 
-    // convert to note-compatible object
-    (on, key, time) => ({ on, key, time })
+        Obs.range(0, 3).flatMap(x => {
+          const on = scheduler.clock + (x * (1/3))
+          const off = on + (1/3);
+          return Obs.fromArray([on, off]);
+        }),
+
+        // convert to note-compatible object
+        (on, key, time) => ({ on, key, time })
+      );
+
+      notes.subscribe(::$.onNext);
+    }
   );
 
-  notes.subscribe(::$.onNext);
+  module.hot && module.hot.dispose(() => {
+    $.dispose();
+    $$.dispose();
+  });
 
-  scheduler.scheduleRelative(2000, play);
-});
+  return $;
+}
+
