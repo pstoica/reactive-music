@@ -5,7 +5,6 @@ import b from 'streams/b';
 export default (scheduler) => {
   const $ = µ.requestChannel('DEBUGGER').subscribe(
     (m) => {
-    console.log(m);
       Obs
         .merge(
           a(scheduler)
@@ -20,5 +19,7 @@ export default (scheduler) => {
   );
 
   module.hot && module.hot.dispose(() => $.dispose());
+
+  return Obs.just(1);
 }
 
