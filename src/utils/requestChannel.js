@@ -23,10 +23,12 @@ export default function requestChannel(deviceName = 'DEBUGGER') {
     devicePromise.then(device => {
       const subject = new Rx.Subject();
 
-      subject.subscribe(({ note, time }) => device.send(
-        µ.midi.createNote(note),
-        time * window.MS_PER_CYCLE
-      ));
+      subject.subscribe(({ note }) => {
+        device.send(
+          µ.midi.createNote(note),
+          window.current + ((window.ADVANCE_BY) * (window.CPS * 1000))
+        );
+      });
 
       return Promise.resolve(subject);
     }).catch(err => console.log(err))

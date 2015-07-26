@@ -16,14 +16,16 @@ export default (scheduler) => {
           .flatMap(x => Obs.repeat(x, 2)),
 
         Obs.range(0, 3).flatMap(x => {
-          const on = scheduler.clock + (x * (1/3))
-          const off = on + (1/3);
+          const on = (x * (1/3))
+          const off = (1/3);
           return Obs.fromArray([on, off]);
         }),
 
         // convert to note-compatible object
         (on, key, time) => ({ on, key, time })
-      );
+      ).flatMap(x => {
+        return Rx.Observable.just(x).delay(x.time);
+      });
 
       notes.subscribe(::$.onNext);
     }
